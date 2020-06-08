@@ -128,43 +128,64 @@ impl BitOr for Cube {
 
 impl Display for Cube {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "top")?;
         for z in 0..self.z {
-            writeln!(f, " y")?;
             for y in (0..self.y).rev() {
-                if y == self.y - 1 {
-                    write!(f, " ^")?
-                } else if (y + 1) % 5 == 0 {
-                    write!(f, " +")?;
+                if z == 0 {
+                    for _ in 0..y+1 {
+                        write!(f, " ")?;
+                    }
+                    if y == self.y-1 {
+                        write!(f, "y ")?;
+                    } else {
+                        write!(f, "  ")?;
+                    }
                 } else {
-                    write!(f, " |")?;
+                    write!(f, "  |")?;
+                    if y == self.y-1 {
+                        for _ in 0..y-2 {
+                            write!(f, " ")?;
+                        }
+                        write!(f, "y ")?;
+                    } else {
+                        for _ in 0..y {
+                            write!(f, " ")?;
+                        }
+                    }
+                }
+                if self.project_to_yz(y, z) {
+                    write!(f, "#")?;
+                } else if (y + 1) % 5 == 0 {
+                    write!(f, "+")?;
+                } else {
+                    write!(f, "/")?;
                 }
 
                 for x in 0..self.x {
                     let value = self.get(x, y, z);
                     if value {
-                        write!(f, "#")?;
+                        write!(f, " *")?;
                     } else if (x + 1) % 5 == 0 && (y + 1) % 5 == 0 {
-                        write!(f, "+")?;
+                        write!(f, " +")?;
                     } else {
                         // Unicode middle dot "·"
-                        write!(f, "\u{b7}")?;
+                        write!(f, " \u{b7}")?;
                     }
                 }
                 writeln!(f)?;
             }
 
-            write!(f, "{:2}", z)?;
-            for x in 0..(self.x-1) {
-                if (x + 1) % 5 == 0 {
-                    write!(f, "+")?;
+            write!(f, "z{:2}", z)?;
+            for x in 0..self.x {
+                if self.project_to_xz(x, z) {
+                    write!(f, "-#")?;
+                } else if (x + 1) % 5 == 0 {
+                    write!(f, "-+")?;
                 } else {
-                    write!(f, "-")?;
+                    write!(f, "--")?;
                 }
             }
-            writeln!(f, "> x")?;
+            writeln!(f, " x")?;
         }
-        writeln!(f, "bottom")?;
         Ok(())
     }
 }
