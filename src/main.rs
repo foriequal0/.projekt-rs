@@ -35,17 +35,15 @@ fn bitmaps(width: u8) -> impl Iterator<Item = impl Iterator<Item = u8>> {
 }
 
 const COORDINATE: &str = "
-      Y (0,Y,0)
-       .-|-.
- O .-'   |   '-. (X,Y,0)
-  |  YZ  |  XZ  |
-  |      |      |
-  |    .-'-(0,Y,Z)
-  |.-'       '-.|
-Z(0,0,Z)     .-' (X,Y,Z)
-       '-.-'
-      X (X,0,Z)
-";
+      .-' Y       O '-.
+O .-'   |           |    '-.
+ |      |           |       | X
+ |  YZ  |           |  XZ   |
+ |    .-'           '-.     |
+ |.-'       .-'-.   Z    '-.|
+ Z     .-'         '-.
+        '-.       .-'
+            '-.-'";
 #[derive(Eq, PartialEq, Hash, Clone)]
 struct Cube {
     bitmap: Vec<bool>,
