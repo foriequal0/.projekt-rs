@@ -12,7 +12,9 @@ fn main() -> Result<()> {
     for (x, z) in xz_columns {
         for bitmap in bitmaps(cube.y) {
             for y in bitmap {
-                cube.set(x, y, z, yz.get(y, z));
+                if !cube.project_to_xz(x, z) || !cube.project_to_yz(y, z) {
+                    cube.set(x, y, z, yz.get(y, z));
+                }
             }
         }
     }
@@ -88,6 +90,10 @@ impl Cube {
         plain
     }
 
+    fn project_to_xz(&self, x: u8, z: u8) -> bool {
+        (0..self.y).any(|y| self.get(x, y ,z))
+    }
+
     fn project_yz(&self) -> Plain {
         let mut plain = Plain::new(self.y, self.z);
         for x in 0..self.x {
@@ -98,6 +104,10 @@ impl Cube {
             }
         }
         plain
+    }
+
+    fn project_to_yz(&self, y: u8, z: u8) -> bool {
+        (0..self.x).any(|x| self.get(x, y ,z))
     }
 }
 
